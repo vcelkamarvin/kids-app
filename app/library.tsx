@@ -3,6 +3,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { colors, fonts, space, radii } from '../tokens';
 import { Text } from '../primitives/Text';
+import { SceneBackground } from '../primitives/SceneBackground';
+import { Character } from '../primitives/Character';
 import { MOCK_LIBRARY } from '../data/stories';
 import { getCharacter, getWorld } from '../data/worlds';
 
@@ -40,9 +42,11 @@ export default function LibraryScreen() {
               onPress={() => router.push('/reader')}
             >
               {/* Scene cover */}
-              <View style={[styles.cover, { backgroundColor: world.color }]}>
-                <Text style={styles.coverEmoji}>{world.emoji}</Text>
-                <Text style={styles.coverCharEmoji}>{char.emoji}</Text>
+              <View style={styles.cover}>
+                <SceneBackground worldId={story.worldId} height={120} />
+                <View style={styles.coverCharSlot}>
+                  <Character id={story.characterId} size={56} />
+                </View>
               </View>
 
               {/* Card content */}
@@ -143,22 +147,13 @@ const styles = StyleSheet.create({
   },
   cover: {
     height: 120,
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    justifyContent: 'space-between',
-    paddingHorizontal: space(5),
-    paddingBottom: space(3),
+    overflow: 'hidden',
+    position: 'relative',
   },
-  coverEmoji: {
-    fontFamily: fonts.body,
-    fontSize: 52,
-    lineHeight: 60,
-  },
-  coverCharEmoji: {
-    fontFamily: fonts.body,
-    fontSize: 36,
-    lineHeight: 44,
-    opacity: 0.85,
+  coverCharSlot: {
+    position: 'absolute',
+    bottom: 8,
+    right: 16,
   },
   cardBody: {
     padding: space(4),

@@ -69,7 +69,7 @@ export default function HomeScreen() {
               <Card style={styles.libraryCard}>
                 <View style={styles.libraryRow}>
                   <View style={[styles.libraryThumb, { backgroundColor: world.color }]}>
-                    <Text style={styles.libraryEmoji}>{world.emoji}</Text>
+                    <Character id={story.characterId} size={36} />
                   </View>
                   <View style={styles.libraryInfo}>
                     <Text style={styles.libraryIndex}>{String(i + 1).padStart(2, '0')}.</Text>
@@ -222,10 +222,6 @@ const styles = StyleSheet.create({
     borderRadius: radii.card,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  libraryEmoji: {
-    fontFamily: fonts.body,
-    fontSize: 24,
   },
   libraryInfo: {
     flex: 1,

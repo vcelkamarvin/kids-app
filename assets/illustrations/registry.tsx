@@ -1,75 +1,67 @@
 // Illustration registry — single source of truth for art assets.
-// Drop a real SVG component into ./svg/<id>.tsx and it auto-activates.
-// Everything else stays on IllustrationPlaceholder with the correct palette color.
-// No layout shift when real art arrives — sizes are fixed at the call site.
-//
+// Characters: square (1:1). Worlds: landscape 16:9 (width × 0.5625).
 // Usage:
-//   import { getIllustration } from '@/assets/illustrations/registry';
 //   const Illus = getIllustration('otto');
-//   <Illus width={120} height={140} />
+//   <Illus width={120} height={120} />
 
 import type { CharacterId, WorldId } from '../../data/worlds';
-import { CAST, WORLDS } from '../../data/worlds';
-import { IllustrationPlaceholder } from '../../primitives/IllustrationPlaceholder';
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Text } from '../../primitives/Text';
-import { fonts } from '../../tokens';
+import { View } from 'react-native';
+
+import { Luna } from './svg/luna';
+import { Otto } from './svg/otto';
+import { Pip } from './svg/pip';
+import { Bo } from './svg/bo';
+import { Fern } from './svg/fern';
+import { Forest } from './svg/forest';
+import { Ocean } from './svg/ocean';
+import { Space } from './svg/space';
+import { Castle } from './svg/castle';
+import { Meadow } from './svg/meadow';
+import { Cozy } from './svg/cozy';
 
 export type IllustrationId = CharacterId | WorldId;
-
 type IllusProps = { width?: number; height?: number; style?: object };
 
-// Real SVG components live here. Uncomment and import as you add them.
-// const SVGs: Partial<Record<IllustrationId, React.ComponentType<IllusProps>>> = {
-//   otto: require('./svg/otto').default,
-//   forest: require('./svg/forest').default,
-// };
-
-const SVGs: Partial<Record<IllustrationId, React.ComponentType<IllusProps>>> = {};
-
-function colorFor(id: IllustrationId): string {
-  const char = CAST.find(c => c.id === id);
-  if (char) return char.color;
-  const world = WORLDS.find(w => w.id === id);
-  if (world) return world.color;
-  return '#cccccc';
-}
-
-function emojiFor(id: IllustrationId): string {
-  const char = CAST.find(c => c.id === id);
-  if (char) return char.emoji;
-  const world = WORLDS.find(w => w.id === id);
-  if (world) return world.emoji;
-  return '🎨';
-}
-
-// Returns a component sized at the call site. Falls back to emoji placeholder.
-export function getIllustration(id: IllustrationId): React.ComponentType<IllusProps> {
-  const Real = SVGs[id];
-  if (Real) return Real;
-
-  const color = colorFor(id);
-  const emoji = emojiFor(id);
-
-  return function Placeholder({ width, height, style }: IllusProps) {
+// Wrap a character SVG (square, uses size prop) into the { width, height } interface
+function charWrapper(Comp: React.ComponentType<{ size?: number }>) {
+  return function CharIllus({ width, height, style }: IllusProps) {
+    const size = width ?? height ?? 96;
     return (
-      <View
-        style={[
-          { width, height, backgroundColor: color, alignItems: 'center', justifyContent: 'center' },
-          style,
-        ]}
-      >
-        <Text style={styles.emoji}>{emoji}</Text>
+      <View style={style}>
+        <Comp size={size} />
       </View>
     );
   };
 }
 
-const styles = StyleSheet.create({
-  emoji: {
-    fontFamily: fonts.body,
-    fontSize: 48,
-    lineHeight: 56,
-  },
-});
+// Wrap a world SVG (16:9, uses size prop = width) into the { width, height } interface
+function worldWrapper(Comp: React.ComponentType<{ size?: number }>) {
+  return function WorldIllus({ width, height, style }: IllusProps) {
+    // If height is given but not width, derive width from the 16:9 ratio
+    const size = width ?? (height ? height / 0.5625 : 320);
+    return (
+      <View style={style}>
+        <Comp size={size} />
+      </View>
+    );
+  };
+}
+
+const illustrations: Record<IllustrationId, React.ComponentType<IllusProps>> = {
+  luna:   charWrapper(Luna),
+  otto:   charWrapper(Otto),
+  pip:    charWrapper(Pip),
+  bo:     charWrapper(Bo),
+  fern:   charWrapper(Fern),
+  forest: worldWrapper(Forest),
+  ocean:  worldWrapper(Ocean),
+  space:  worldWrapper(Space),
+  castle: worldWrapper(Castle),
+  meadow: worldWrapper(Meadow),
+  cozy:   worldWrapper(Cozy),
+};
+
+export function getIllustration(id: IllustrationId): React.ComponentType<IllusProps> {
+  return illustrations[id];
+}

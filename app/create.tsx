@@ -5,6 +5,8 @@ import { useRouter } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import { colors, fonts, space, radii } from '../tokens';
 import { Text } from '../primitives/Text';
+import { SceneBackground } from '../primitives/SceneBackground';
+import { Character } from '../primitives/Character';
 import { WORLDS, CAST, LENGTHS } from '../data/worlds';
 import type { WorldId, CharacterId, StoryLength } from '../data/worlds';
 
@@ -87,8 +89,8 @@ export default function CreateScreen() {
                     style={[styles.worldCard, selected && styles.worldCardSelected]}
                     onPress={() => { tap(); setWorldId(world.id); }}
                   >
-                    <View style={[styles.worldThumb, { backgroundColor: world.color }]}>
-                      <Text style={styles.worldEmoji}>{world.emoji}</Text>
+                    <View style={styles.worldThumb}>
+                      <SceneBackground worldId={world.id} height={110} />
                     </View>
                     <Text style={styles.worldName}>{world.name}</Text>
                     <Text style={styles.worldTheme}>{world.theme}</Text>
@@ -113,7 +115,7 @@ export default function CreateScreen() {
                     onPress={() => { tap(); setCharacterId(char.id); }}
                   >
                     <View style={[styles.narratorAvatar, { backgroundColor: char.color }]}>
-                      <Text style={styles.narratorEmoji}>{char.emoji}</Text>
+                      <Character id={char.id} size={40} />
                     </View>
                     <View style={styles.narratorInfo}>
                       <Text style={styles.narratorName}>{char.name}</Text>
@@ -127,7 +129,7 @@ export default function CreateScreen() {
               {/* Own voice option */}
               <Pressable style={styles.ownVoiceCard} onPress={() => router.push('/voice')}>
                 <View style={styles.narratorAvatar}>
-                  <Text style={styles.narratorEmoji}>🎙</Text>
+                  <Text style={{ fontFamily: fonts.body, fontSize: 26 }}>🎙</Text>
                 </View>
                 <View style={styles.narratorInfo}>
                   <Text style={styles.narratorName}>Your own voice</Text>
@@ -276,10 +278,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  worldEmoji: {
-    fontFamily: fonts.body,
-    fontSize: 44,
-  },
   worldName: {
     fontFamily: fonts.display,
     fontSize: 15,
@@ -319,10 +317,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#E8E8E8',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  narratorEmoji: {
-    fontFamily: fonts.body,
-    fontSize: 26,
   },
   narratorInfo: {
     flex: 1,

@@ -1,21 +1,25 @@
+import { useState } from 'react';
 import { View } from 'react-native';
 import { getIllustration } from '../assets/illustrations/registry';
 import type { WorldId } from '../data/worlds';
 
-// Full-bleed world backdrop. Fixed height so layout never shifts when real SVG arrives.
+// Full-bleed world backdrop. Measures its own width so the SVG fills edge-to-edge.
 export function SceneBackground({
   worldId,
   height = 200,
-  width,
 }: {
   worldId: WorldId;
   height?: number;
-  width?: number | string;
 }) {
+  const [measuredWidth, setMeasuredWidth] = useState<number>(0);
   const Illus = getIllustration(worldId);
+
   return (
-    <View style={{ height, width: width ?? '100%', overflow: 'hidden' }}>
-      <Illus width={typeof width === 'number' ? width : undefined} height={height} />
+    <View
+      style={{ height, width: '100%', overflow: 'hidden' }}
+      onLayout={e => setMeasuredWidth(e.nativeEvent.layout.width)}
+    >
+      {measuredWidth > 0 && <Illus width={measuredWidth} height={height} />}
     </View>
   );
 }
