@@ -1,5 +1,6 @@
 import { View, ScrollView, StyleSheet, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 import { colors, space, fonts } from '../tokens';
 import { Card } from '../primitives/Card';
 import { Text } from '../primitives/Text';
@@ -7,6 +8,7 @@ import { NumberedHeading } from '../primitives/NumberedHeading';
 import { IllustrationPlaceholder } from '../primitives/IllustrationPlaceholder';
 
 export default function HomeScreen() {
+  const router = useRouter();
   return (
     <SafeAreaView style={styles.screen}>
       <ScrollView
@@ -32,8 +34,8 @@ export default function HomeScreen() {
             <IllustrationPlaceholder color={colors.green} height={320} label="body + brain illustration" />
           </View>
 
-          {/* CTA */}
-          <Pressable style={styles.cta}>
+          {/* CTA → opens Reader demo */}
+          <Pressable style={styles.cta} onPress={() => router.push('/reader')}>
             <Text style={styles.ctaText}>Start the story →</Text>
           </Pressable>
         </Card>

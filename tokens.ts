@@ -3,6 +3,7 @@
 export const colors = {
   indigo: '#2E2BA6', // app background (the hellosunrise deep blue)
   paper: '#FFFFFF',  // cards / surfaces
+  warmPaper: '#F4EFE3', // reader background — warm tint, easy on sleepy eyes
   ink: '#141414',    // primary text
   inkMuted: '#6B6B6B',
 
